@@ -1,0 +1,46 @@
+{% extends "core/skeleton.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Index{% endblock %}
+{% block body %}
+
+  <main>
+    <div class="container d-flex flex-column gap-5 px-4 py-5">
+      <div class="row">
+        <div class="text-center">
+          <h1 class="display-5 fw-bold">
+            Monitor for Security Threats
+          </h1>
+          <div class="col-lg-6 mx-auto">
+            <p class="lead mb-4">
+              Scan your website for common security threats. Subscribe for email alerts.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-6 mx-auto">
+          {% crispy form %}
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-6 mx-auto">
+          <p class="fst-italic">
+            Security note: this tool is a proof of concept.
+            The scans performed by this tool are not completely thorough. 
+            Never rely on a single tool to secure your website.
+          </p>
+          <p class="text-muted">
+            For documentation on the scans performed by this tool, see the 
+            <a href="{% url 'docs' %}">docs</a>.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+{% endblock %}

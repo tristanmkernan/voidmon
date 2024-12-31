@@ -1,0 +1,52 @@
+{% extends "core/skeleton.html" %}
+
+{% load humanize %}
+{% load crispy_forms_tags %}
+
+{% block extra_head %}
+ {% if not scan.is_complete %}
+    <!-- refresh every 5 seconds -->
+    <meta http-equiv="refresh" content="5">
+ {% endif %}
+{% endblock %}
+
+{% block title %}Scan{% endblock %}
+
+{% block body %}
+
+  <main>
+    <div class="container">
+
+        <div class="row">
+            <div class="col">
+                <h1>Scan of {{ scan.url }}</h1>
+                <p>Status: {{ scan.get_status_display }}</p>
+                <p>Queued: {{ scan.created_at|naturaltime }}</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+
+                <h2>Issues</h2>
+                <ul>
+                    {% for issue in scan.scanissue_set.all %}
+                        <li>{{ issue.get_type_display }}: {{ issue.message }}</li>
+                    {% empty %}
+                        <li>No issues found</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <h2>Subscribe for email alerts</h2>
+                {% crispy subscription_form %}
+            </div>
+        </div>
+
+    </div>
+  </main>
+
+{% endblock %}
