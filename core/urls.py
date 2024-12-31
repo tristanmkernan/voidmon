@@ -11,4 +11,9 @@ urlpatterns = [
         "subscribe/", views.SubscriptionCreateView.as_view(), name="subscription_create"
     ),
     path("docs/", views.DocsView.as_view(), name="docs"),
+    path(
+        "subscriptions/<uuid:uuid>/unsubscribe/",
+        views.UnsubscribeView.as_view(),
+        name="subscription_unsubscribe",
+    ),
 ]

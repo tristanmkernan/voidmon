@@ -6,7 +6,7 @@ from .models import Scan, NotificationSubscription
 
 
 class ScanRequestForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, form_id=None, **kwargs):
         super().__init__(*args, **kwargs)
 
         # Remove label for url field
@@ -14,6 +14,10 @@ class ScanRequestForm(forms.ModelForm):
         self.fields["url"].widget.attrs["placeholder"] = "Enter URL to scan"
 
         self.helper = FormHelper()
+
+        if form_id:
+            self.helper.form_id = form_id
+
         self.helper.layout = Layout(
             Fieldset(
                 "Launch Scan",
@@ -21,6 +25,7 @@ class ScanRequestForm(forms.ModelForm):
             ),
             Submit("submit", "Run"),
         )
+
         self.helper.form_action = reverse("scan_request")
 
     class Meta:
@@ -31,19 +36,22 @@ class ScanRequestForm(forms.ModelForm):
 
 
 class SubscriptionCreateForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, next_url=None, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            Fieldset(
-                "Subscribe",
-                "url",
-                "email",
-            ),
+            "url",
+            "email",
             Submit("submit", "Subscribe"),
         )
-        self.helper.form_action = reverse("subscription_create")
+
+        form_action = reverse("subscription_create")
+
+        if next_url:
+            form_action = f"{form_action}?next={next_url}"
+
+        self.helper.form_action = form_action
 
     class Meta:
         model = NotificationSubscription
