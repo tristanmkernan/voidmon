@@ -1,0 +1,16 @@
+version: "3.9"
+name: outreach-dev
+
+services:
+  redis:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+  mailpit:
+    image: axllent/mailpit
+    logging:
+      driver: 'none'  # disable saving logs
+    ports:
+      - 1025:1025 # smtp server
+      - 8025:8025 # web ui
