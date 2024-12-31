@@ -1,52 +1,151 @@
 {% extends "core/skeleton.html" %}
-
 {% load humanize %}
 {% load crispy_forms_tags %}
-
+{% load render_table from django_tables2 %}
 {% block extra_head %}
- {% if not scan.is_complete %}
-    <!-- refresh every 5 seconds -->
+  {% if not scan.is_complete %}
+    <!-- refresh every 5 seconds if not complete -->
     <meta http-equiv="refresh" content="5">
- {% endif %}
+  {% endif %}
 {% endblock %}
-
 {% block title %}Scan{% endblock %}
-
 {% block body %}
-
   <main>
-    <div class="container">
+    <div class="container px-4 py-4">
+      <div class="row">
+        <div class="col-lg-9 d-flex flex-column gap-4">
+          <!-- Main content -->
+          <!-- At a glance / summary-->
+          <div class="card">
+            <div class="card-body d-flex flex-column gap-2">
+              <div class="h5 d-flex flex-row gap-2 align-items-center">
+                <i class="bi bi-search me-2"></i>
+                Report summary
+                <small class="text-body-secondary">
+                  {{ scan.friendly_url_display }}
+                </small>
+              </div>
 
-        <div class="row">
-            <div class="col">
-                <h1>Scan of {{ scan.url }}</h1>
-                <p>Status: {{ scan.get_status_display }}</p>
-                <p>Queued: {{ scan.created_at|naturaltime }}</p>
+              <div class="d-flex flex-row gap-2 align-items-center">
+                <span class="badge rounded-pill text-bg-info">
+                  {{ scan.get_status_display }}
+                </span>
+                <small class="text-muted">
+                  Updated {{ scan.created_at|naturaltime }} <!-- TODO use updated_at -->
+                </small>
+              </div>
+
+              <!-- Actions-->
+              <div class="d-flex flex-row gap-2 align-items-center mt-2">
+                <button class="btn btn-primary btn-sm" form="re-scan-form" {% if not scan.is_complete %}disabled{% endif %}>
+                  <i class="bi bi-arrow-repeat"></i> 
+                  Request a re-scan
+                </button>
+              </div>
+
+              <!-- Action forms, hidden -->
+              <div class="d-none">
+                {% crispy re_scan_form %}
+              </div>
+
+              <!-- Issue counts-->
+              <div class="d-flex flex-row gap-2 align-items-center mt-2">
+                <div class="card text-bg-danger">
+                  <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-body-secondary">
+                      <i class="bi bi-exclamation-triangle me-1"></i>
+                      Vulnerabilities
+                    </h6>
+                    <p class="card-text">12</p>
+                  </div>
+                </div>
+                <div class="card text-bg-warning">
+                  <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-body-secondary">
+                      <i class="bi bi-flag me-1"></i>
+                      Warnings
+                    </h6>
+                    <p class="card-text">13</p>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-body-secondary">
+                      <i class="bi bi-info-circle me-1"></i>
+                      Notices
+                    </h6>
+                    <p class="card-text">20</p>
+                  </div>
+                </div>
+              </div>
             </div>
-        </div>
+          </div>
 
-        <div class="row">
-            <div class="col">
-
-                <h2>Issues</h2>
-                <ul>
-                    {% for issue in scan.scanissue_set.all %}
-                        <li>{{ issue.get_type_display }}: {{ issue.message }}</li>
-                    {% empty %}
-                        <li>No issues found</li>
-                    {% endfor %}
-                </ul>
+          <!-- Issues -->
+          <div class="card">
+            <div class="card-body">
+              <p class="h5">
+                <i class="bi bi-flag me-2"></i>
+                Issues
+              </p>
+              {% render_table issues_table %}
             </div>
-        </div>
+          </div>
 
-        <div class="row">
-            <div class="col">
-                <h2>Subscribe for email alerts</h2>
+          <!-- Subscribe for email alerts -->
+          <div class="card">
+            <div class="card-body">
+              <a class="h5 d-flex flex-row align-items-center" data-bs-toggle="collapse" href="#collapseSubscriptionForm">
+                <i class="bi bi-envelope me-2"></i>
+                Subscribe for email alerts
+                <i class="bi bi-chevron-down ms-auto"></i>
+              </a>
+              <div class="collapse" id="collapseSubscriptionForm">
                 {% crispy subscription_form %}
+              </div>
             </div>
+          </div>
         </div>
 
+        <div class="col-lg-3 d-flex flex-column gap-4">
+          <!-- Progress sidebar-->
+          <div class="card">
+            <div class="card-header">Progress</div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Queued</li>
+              <li class="list-group-item">Running</li>
+              <li class="list-group-item">Finished</li>
+            </ul>
+          </div>
+
+          <!-- Grade -->
+          <div class="card">
+            <div class="card-header">Grade</div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">A</li>
+              <li class="list-group-item">B</li>
+              <li class="list-group-item">C</li>
+              <li class="list-group-item">D</li>
+              <li class="list-group-item">F</li>
+            </ul>
+          </div>
+
+          <!-- Links-->
+          <div class="card">
+            <div class="card-header">Links</div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <i class="bi bi-link-45deg me-2"></i>
+                <a href="{% url 'scan_detail' scan.uuid %}">Report permalink</a>
+              </li>
+              <li class="list-group-item">
+                <i class="bi bi-book me-2"></i>
+                <a href="{% url 'docs' %}">Docs</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
-
 {% endblock %}

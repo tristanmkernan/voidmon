@@ -13,6 +13,8 @@ class Scan(models.Model):
     uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # TODO add updated_at field
+
     url = models.URLField()  # TODO expand length from 200 to 1024 chars
     status = models.CharField(
         max_length=255, choices=ScanStatus.choices, default=ScanStatus.PENDING
@@ -24,6 +26,11 @@ class Scan(models.Model):
             self.status == self.ScanStatus.SUCCESS
             or self.status == self.ScanStatus.ERROR
         )
+
+    @property
+    def friendly_url_display(self):
+        # TODO consider returning just the domain
+        return self.url.replace("https://", "").replace("http://", "")
 
     def __str__(self):
         return f"{self.url} - {self.status}"

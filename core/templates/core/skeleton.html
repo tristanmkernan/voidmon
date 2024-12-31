@@ -1,44 +1,30 @@
 {% load static django_htmx %}
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <!-- Bootstrap CSS -->
-    <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet" >
-
-    <link href="{% static "css/bootstrap-icons.min.css" %}" rel="stylesheet" >
-
+    <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+    <link href="{% static "css/bootstrap-icons.min.css" %}" rel="stylesheet">
     <title>
-      {% block title %}{% endblock %} | Outreach
+      {% block title %}{% endblock %}
+      | Outreach
     </title>
-
     {% block extra_head %}{% endblock %}
   </head>
-
   <body>
     {% block navbar %}
       {% include "core/navbar.html" %}
     {% endblock %}
-
     {% block messages %}
       {% include "core/messages.html" %}
     {% endblock %}
-
     {% block body %}{% endblock %}
-
-
     <script src="{% static "js/bootstrap.bundle.min.js" %}"></script>
-
     <script src="{% static "js/htmx.min.js" %}"></script>
     {% django_htmx_script %}
-
-    {% block scripts %}
-    {% endblock %}
+    {% block scripts %}{% endblock %}
   </body>
-
 </html>
