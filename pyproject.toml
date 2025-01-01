@@ -38,6 +38,7 @@ pytest = "^8.3.4"
 pytest-django = "^4.9.0"
 time-machine = "^2.16.0"
 djlint = "^1.36.4"
+watchfiles = "^1.0.3"
 
 [build-system]
 requires = ["poetry-core"]

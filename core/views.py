@@ -10,7 +10,7 @@ from django.urls import reverse
 from django_tables2 import tables
 from .models import Scan, NotificationSubscription, ScanIssue
 from .forms import ScanRequestForm, SubscriptionCreateForm
-from .tasks import run_scan
+from .tasks import run_scan, queue_subscription_confirmation_email
 
 
 class IndexView(TemplateView):
@@ -82,6 +82,7 @@ class SubscriptionCreateView(CreateView):
     def form_valid(self, form):
         response = super().form_valid(form)
         messages.success(self.request, f"Subscribed {self.object.email}")
+        queue_subscription_confirmation_email.delay(self.object.id)
         return response
 
     def get_success_url(self):
@@ -102,3 +103,6 @@ class UnsubscribeView(DeleteView):
         response = self.delete(request, *args, **kwargs)
         messages.success(self.request, "Unsubscribed")
         return response
+
+    def get_success_url(self):
+        return reverse("index")

@@ -235,3 +235,5 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(hour=14, minute=0),  # 9am Eastern = 14:00 UTC
     }
 }
+
+SITE_URL = "https://voidmon.tmk.name"

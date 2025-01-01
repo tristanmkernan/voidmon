@@ -1,5 +1,6 @@
 from celery import shared_task
 
+from .mail import send_subscription_confirmation_email
 from .models import Scan, ScanIssue, NotificationSubscription
 from .services import scan_url
 
@@ -40,3 +41,9 @@ def run_daily_scans():
         # result = run_scan.delay(scan.id)
 
         # TODO email the user if the scan has vulnerabilities
+
+
+@shared_task
+def queue_subscription_confirmation_email(subscription_id: int):
+    subscription = NotificationSubscription.objects.get(id=subscription_id)
+    send_subscription_confirmation_email(subscription)
