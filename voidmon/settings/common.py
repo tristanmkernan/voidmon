@@ -230,5 +230,8 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "UTC"
 
 CELERY_BEAT_SCHEDULE = {
-    # TODO add hourly website check task here
+    "run-daily-scans": {
+        "task": "core.tasks.run_daily_scans",
+        "schedule": crontab(hour=14, minute=0),  # 9am Eastern = 14:00 UTC
+    }
 }

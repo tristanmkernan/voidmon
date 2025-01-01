@@ -1,6 +1,6 @@
 from celery import shared_task
 
-from .models import Scan, ScanIssue
+from .models import Scan, ScanIssue, NotificationSubscription
 from .services import scan_url
 
 
@@ -22,3 +22,21 @@ def run_scan(scan_id: int):
         scan.status = Scan.ScanStatus.SUCCESS
 
     scan.save()
+
+
+@shared_task
+def run_daily_scans():
+    # Bulk create scans for all subscriptions
+    scans = [
+        Scan(url=subscription.url)
+        for subscription in NotificationSubscription.objects.all()
+    ]
+    created_scans = Scan.objects.bulk_create(scans)
+
+    # Run scans asynchronously
+    for scan in created_scans:
+        # TODO
+        pass
+        # result = run_scan.delay(scan.id)
+
+        # TODO email the user if the scan has vulnerabilities
