@@ -2,9 +2,7 @@ version: "3.9"
 
 services:
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     command: "webserver"
     restart: unless-stopped
     ports:
@@ -12,6 +10,24 @@ services:
     env_file: .env.prod
     depends_on:
       - redis
+      - postgres
+  celery-worker:
+    build: .
+    command: "celery-worker"
+    restart: unless-stopped
+    env_file: .env.prod
+    depends_on:
+      - redis
+      - web
+      - postgres
+  celery-beat:
+    build: .
+    command: "celery-beat"
+    restart: unless-stopped
+    env_file: .env.prod
+    depends_on:
+      - redis
+      - web
       - postgres
   postgres:
     image: postgres:16-alpine
@@ -22,34 +38,6 @@ services:
       - POSTGRES_PASSWORD=postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-  celery-worker:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: "celery-worker"
-    restart: unless-stopped
-    env_file: .env.prod
-    volumes:
-      - ./db:/code/db
-    depends_on:
-      - redis
-      - web
-      - postgres
-  celery-beat:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: "celery-beat"
-    restart: unless-stopped
-    env_file: .env.prod
-    volumes:
-      - ./db:/code/db
-    depends_on:
-      - redis
-      - web
-      - postgres
   redis:
     image: redis:7.2-alpine
     restart: unless-stopped

@@ -31,7 +31,7 @@
                   {{ scan.get_status_display }}
                 </span>
                 <small class="text-muted">
-                  Updated {{ scan.last_updated_at|naturaltime }} <!-- TODO use updated_at -->
+                  Updated {{ scan.last_updated_at|naturaltime }}
                 </small>
               </div>
 
@@ -93,7 +93,7 @@
           </div>
 
           <!-- Subscribe for email alerts -->
-          <div class="card">
+          <div class="card d-none">  <!-- TODO: enable -->
             <div class="card-body">
               <a class="h5 d-flex flex-row align-items-center text-decoration-none" data-bs-toggle="collapse" href="#collapseSubscriptionForm">
                 <i class="bi bi-envelope me-2"></i>

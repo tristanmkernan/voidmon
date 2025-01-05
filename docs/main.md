@@ -8,6 +8,7 @@
 - [x] Scanning implementation
 - [x] Finish scan detail page
 - [ ] Email working
+  - [x] Email disabled until post-launch
 - [ ] Production ready
 
 ### Post-launch
