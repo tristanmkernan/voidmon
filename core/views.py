@@ -29,7 +29,8 @@ class DocsView(TemplateView):
 class ScanIssueTable(tables.Table):
     class Meta:
         model = ScanIssue
-        fields = ("type", "message")
+        # TODO improve display of severity, add info to type
+        fields = ("severity", "type", "message")
         # TODO implement ordering by severity
         #        order_by = ("-created_at",)
         orderable = False
@@ -41,6 +42,9 @@ class ScanDetailView(DetailView):
     template_name = "core/scan_detail.html"
     slug_field = "uuid"
     slug_url_kwarg = "uuid"
+
+    def get_queryset(self):
+        return super().get_queryset().prefetch_related("scanissue_set")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -1,4 +1,5 @@
 from celery import shared_task
+from django.utils import timezone
 
 from .mail import send_subscription_confirmation_email
 from .models import Scan, ScanIssue, NotificationSubscription
@@ -10,6 +11,7 @@ def run_scan(scan_id: int):
     scan = Scan.objects.get(id=scan_id)
 
     scan.status = Scan.ScanStatus.RUNNING
+    scan.started_at = timezone.now()
     scan.save()
 
     try:
@@ -22,6 +24,7 @@ def run_scan(scan_id: int):
 
         scan.status = Scan.ScanStatus.SUCCESS
 
+    scan.finished_at = timezone.now()
     scan.save()
 
 

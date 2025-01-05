@@ -2,6 +2,8 @@ from uuid import uuid4
 
 from django.db import models
 
+from .enums import ScanIssueType, ScanIssueSeverity
+
 
 class Scan(models.Model):
     class ScanStatus(models.TextChoices):
@@ -12,13 +14,17 @@ class Scan(models.Model):
 
     uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    started_at = models.DateTimeField(null=True)
+    finished_at = models.DateTimeField(null=True)
 
-    # TODO add updated_at field
-
-    url = models.URLField()  # TODO expand length from 200 to 1024 chars
+    url = models.URLField(max_length=1024)
     status = models.CharField(
         max_length=255, choices=ScanStatus.choices, default=ScanStatus.PENDING
     )
+
+    @property
+    def last_updated_at(self):
+        return self.finished_at or self.started_at or self.created_at
 
     @property
     def is_complete(self):
@@ -29,26 +35,60 @@ class Scan(models.Model):
 
     @property
     def friendly_url_display(self):
-        # TODO consider returning just the domain
         return self.url.replace("https://", "").replace("http://", "")
+
+    @property
+    def grade(self):
+        if self.status != self.ScanStatus.SUCCESS:
+            return None
+
+        if self.num_vulnerabilities > 0:
+            return "F"
+        elif self.num_warnings > 0:
+            return "C"
+        return "A"
+
+    @property
+    def num_vulnerabilities(self):
+        return sum(
+            1
+            for issue in self.scanissue_set.all()
+            if issue.severity == ScanIssueSeverity.VULNERABILITY
+        )
+
+    @property
+    def num_warnings(self):
+        return sum(
+            1
+            for issue in self.scanissue_set.all()
+            if issue.severity == ScanIssueSeverity.WARNING
+        )
+
+    @property
+    def num_info(self):
+        return sum(
+            1
+            for issue in self.scanissue_set.all()
+            if issue.severity == ScanIssueSeverity.INFO
+        )
 
     def __str__(self):
         return f"{self.url} - {self.status}"
 
 
 class ScanIssue(models.Model):
-    class ScanIssueType(models.TextChoices):
-        ERROR = "error", "Error"
-        WARNING = "warning", "Warning"
-        INFO = "info", "Info"
-
     uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     scan = models.ForeignKey(Scan, on_delete=models.CASCADE)
 
     type = models.CharField(
-        max_length=255, choices=ScanIssueType.choices, default=ScanIssueType.ERROR
+        max_length=255,
+        choices=ScanIssueType.choices,
+    )
+    severity = models.CharField(
+        max_length=255,
+        choices=ScanIssueSeverity.choices,
     )
     message = models.TextField()
 

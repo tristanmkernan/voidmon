@@ -4,8 +4,8 @@
 {% load render_table from django_tables2 %}
 {% block extra_head %}
   {% if not scan.is_complete %}
-    <!-- refresh every 5 seconds if not complete -->
-    <meta http-equiv="refresh" content="5">
+    <!-- refresh every 1 seconds if not complete -->
+    <meta http-equiv="refresh" content="1">
   {% endif %}
 {% endblock %}
 {% block title %}Scan{% endblock %}
@@ -31,7 +31,7 @@
                   {{ scan.get_status_display }}
                 </span>
                 <small class="text-muted">
-                  Updated {{ scan.created_at|naturaltime }} <!-- TODO use updated_at -->
+                  Updated {{ scan.last_updated_at|naturaltime }} <!-- TODO use updated_at -->
                 </small>
               </div>
 
@@ -56,7 +56,7 @@
                       <i class="bi bi-exclamation-triangle me-1"></i>
                       Vulnerabilities
                     </h6>
-                    <p class="card-text">12</p>
+                    <p class="card-text">{{ scan.num_vulnerabilities }}</p>
                   </div>
                 </div>
                 <div class="card text-bg-warning">
@@ -65,7 +65,7 @@
                       <i class="bi bi-flag me-1"></i>
                       Warnings
                     </h6>
-                    <p class="card-text">13</p>
+                    <p class="card-text">{{ scan.num_warnings }}</p>
                   </div>
                 </div>
                 <div class="card">
@@ -74,7 +74,7 @@
                       <i class="bi bi-info-circle me-1"></i>
                       Notices
                     </h6>
-                    <p class="card-text">20</p>
+                    <p class="card-text">{{ scan.num_info }}</p>
                   </div>
                 </div>
               </div>
@@ -95,7 +95,7 @@
           <!-- Subscribe for email alerts -->
           <div class="card">
             <div class="card-body">
-              <a class="h5 d-flex flex-row align-items-center" data-bs-toggle="collapse" href="#collapseSubscriptionForm">
+              <a class="h5 d-flex flex-row align-items-center text-decoration-none" data-bs-toggle="collapse" href="#collapseSubscriptionForm">
                 <i class="bi bi-envelope me-2"></i>
                 Subscribe for email alerts
                 <i class="bi bi-chevron-down ms-auto"></i>
@@ -118,9 +118,22 @@
           <div class="card">
             <div class="card-header">Progress</div>
             <ul class="list-group list-group-flush">
-              <li class="list-group-item">Queued</li>
-              <li class="list-group-item">Running</li>
-              <li class="list-group-item">Finished</li>
+              <li class="list-group-item d-flex flex-row justify-content-between align-items-center">
+                <span>Queued</span>
+                <i class="bi bi-check"></i>
+              </li>
+              <li class="list-group-item d-flex flex-row justify-content-between align-items-center">
+                <span>Running</span>
+                {% if scan.started_at %}
+                  <i class="bi bi-check"></i>
+                {% endif %}
+              </li>
+              <li class="list-group-item d-flex flex-row justify-content-between align-items-center">
+                <span>Finished</span>
+                {% if scan.finished_at %}
+                  <i class="bi bi-check"></i>
+                {% endif %}
+              </li>
             </ul>
           </div>
 
@@ -128,11 +141,15 @@
           <div class="card">
             <div class="card-header">Grade</div>
             <ul class="list-group list-group-flush">
-              <li class="list-group-item">A</li>
-              <li class="list-group-item">B</li>
-              <li class="list-group-item">C</li>
-              <li class="list-group-item">D</li>
-              <li class="list-group-item">F</li>
+              {% for grade in "ABCDF" %}
+                <li class="list-group-item">
+                  {% if scan.grade == grade %}
+                    <span class="badge rounded-pill text-bg-info">{{ grade }}</span>
+                  {% else %}
+                    {{ grade }}
+                  {% endif %}
+                </li>
+              {% endfor %}
             </ul>
           </div>
 
