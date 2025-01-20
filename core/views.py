@@ -1,4 +1,3 @@
-from typing import Any
 from django.contrib import messages
 from django.views.generic import (
     CreateView,
@@ -7,7 +6,9 @@ from django.views.generic import (
     TemplateView,
 )
 from django.urls import reverse
-from django_tables2 import tables
+
+import django_tables2 as tables
+
 from .models import Scan, NotificationSubscription, ScanIssue
 from .forms import ScanRequestForm, SubscriptionCreateForm
 from .tasks import run_scan, queue_subscription_confirmation_email
@@ -29,12 +30,21 @@ class DocsView(TemplateView):
 class ScanIssueTable(tables.Table):
     class Meta:
         model = ScanIssue
-        # TODO improve display of severity, add info to type
-        fields = ("severity", "type", "message")
+        fields = (
+            "severity",
+            "type",
+            "message",
+        )
         # TODO implement ordering by severity
-        #        order_by = ("-created_at",)
         orderable = False
         paginate = False
+
+    message = tables.TemplateColumn(
+        template_name="core/scan_issue_table/message_column.html"
+    )
+    severity = tables.TemplateColumn(
+        template_name="core/scan_issue_table/severity_column.html"
+    )
 
 
 class ScanDetailView(DetailView):

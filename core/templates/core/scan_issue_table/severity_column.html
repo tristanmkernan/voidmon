@@ -1,0 +1,7 @@
+{% if record.severity == ScanIssueSeverity.WARNING %}
+  <span class="badge rounded-pill bg-warning text-dark">Warning</span>
+{% elif record.severity == ScanIssueSeverity.INFO %}
+  <span class="badge rounded-pill bg-info text-dark">Info</span>
+{% elif record.severity == ScanIssueSeverity.VULNERABILITY %}
+  <span class="badge rounded-pill bg-danger">Vulnerability</span>
+{% endif %}
