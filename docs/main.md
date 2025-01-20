@@ -14,8 +14,8 @@
 
 ### Post-launch
 
-- [ ] Improve scan detail page UI
-  - [ ] Improve the issues table
+- [x] Improve scan detail page UI
+  - [x] Improve the issues table
   - [x] Responsive design
 - [ ] Email support
   - [ ] Daily email task
