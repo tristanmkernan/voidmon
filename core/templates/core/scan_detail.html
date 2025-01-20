@@ -12,13 +12,13 @@
 {% block body %}
   <main>
     <div class="container px-4 py-4">
-      <div class="row">
+      <div class="row gy-4">
         <div class="col-lg-9 d-flex flex-column gap-4">
           <!-- Main content -->
           <!-- At a glance / summary-->
           <div class="card">
             <div class="card-body d-flex flex-column gap-2">
-              <div class="h5 d-flex flex-row gap-2 align-items-center">
+              <div class="h5 d-flex flex-row flex-wrap gap-2 align-items-center">
                 <i class="bi bi-search me-2"></i>
                 Report summary
                 <small class="text-body-secondary">
@@ -49,8 +49,8 @@
               </div>
 
               <!-- Issue counts-->
-              <div class="d-flex flex-row gap-2 align-items-center mt-2">
-                <div class="card text-bg-danger">
+              <div class="d-flex flex-row flex-wrap gap-2 align-items-center mt-2">
+                <div class="card flex-fill text-bg-danger">
                   <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-body-secondary">
                       <i class="bi bi-exclamation-triangle me-1"></i>
@@ -59,7 +59,7 @@
                     <p class="card-text">{{ scan.num_vulnerabilities }}</p>
                   </div>
                 </div>
-                <div class="card text-bg-warning">
+                <div class="card flex-fill text-bg-warning">
                   <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-body-secondary">
                       <i class="bi bi-flag me-1"></i>
@@ -68,7 +68,7 @@
                     <p class="card-text">{{ scan.num_warnings }}</p>
                   </div>
                 </div>
-                <div class="card">
+                <div class="card flex-fill">
                   <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-body-secondary">
                       <i class="bi bi-info-circle me-1"></i>
