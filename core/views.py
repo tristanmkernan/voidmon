@@ -1,3 +1,4 @@
+from operator import attrgetter
 from django.contrib import messages
 from django.views.generic import (
     CreateView,
@@ -35,9 +36,9 @@ class ScanIssueTable(tables.Table):
             "type",
             "message",
         )
-        # TODO implement ordering by severity
         orderable = False
         paginate = False
+        show_header = False
 
     message = tables.TemplateColumn(
         template_name="core/scan_issue_table/message_column.html"
@@ -71,7 +72,13 @@ class ScanDetailView(DetailView):
             form_id="re-scan-form",
         )
 
-        context["issues_table"] = ScanIssueTable(self.object.scanissue_set.all())
+        sorted_scan_issues = sorted(
+            self.object.scanissue_set.all(),
+            key=attrgetter("severity_ranking"),
+            reverse=True,
+        )
+
+        context["issues_table"] = ScanIssueTable(sorted_scan_issues)
         return context
 
 

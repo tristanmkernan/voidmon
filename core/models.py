@@ -92,6 +92,15 @@ class ScanIssue(models.Model):
     )
     message = models.TextField()
 
+    @property
+    def severity_ranking(self):
+        """Supports sorting a list of scan issues by severity, from least to most severe by default (ascending)"""
+        return {
+            ScanIssueSeverity.INFO: 1,
+            ScanIssueSeverity.WARNING: 2,
+            ScanIssueSeverity.VULNERABILITY: 3,
+        }[self.severity]
+
 
 class NotificationSubscription(models.Model):
     uuid = models.UUIDField(default=uuid4, unique=True, editable=False)

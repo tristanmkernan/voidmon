@@ -1,7 +1,16 @@
 {% if record.severity == ScanIssueSeverity.WARNING %}
-  <span class="badge rounded-pill bg-warning text-dark">Warning</span>
+  <span class="badge rounded-pill bg-warning text-dark">
+    <i class="bi bi-flag me-0 me-md-1"></i>
+    <span class="d-none d-md-inline-block">Warning</span>
+  </span>
 {% elif record.severity == ScanIssueSeverity.INFO %}
-  <span class="badge rounded-pill bg-info text-dark">Info</span>
+  <span class="badge rounded-pill bg-info text-dark">
+    <i class="bi bi-info-circle me-0 me-md-1"></i>
+    <span class="d-none d-md-inline-block">Info</span>
+  </span>
 {% elif record.severity == ScanIssueSeverity.VULNERABILITY %}
-  <span class="badge rounded-pill bg-danger">Vulnerability</span>
+  <span class="badge rounded-pill bg-danger">
+    <i class="bi bi-exclamation-triangle me-0 me-md-1"></i>
+    <span class="d-none d-md-inline-block">Vulnerability</span>
+  </span>
 {% endif %}
