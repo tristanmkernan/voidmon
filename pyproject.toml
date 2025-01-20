@@ -1,45 +1,52 @@
-[tool.poetry]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
 name = "voidmon"
 version = "0.1.0"
 description = ""
-authors = ["Tristan Kernan"]
 readme = "README.md"
+authors = [
+    {name = "Tristan Kernan"},
+]
+requires-python = "<4.0,>=3.12"
+dependencies = [
+    "django<6.0.0,>=5.1.4",
+    "django-extensions<4.0.0,>=3.2.3",
+    "django-crispy-forms<3.0,>=2.3",
+    "crispy-bootstrap5<2025.0,>=2024.10",
+    "django-htmx<2.0.0,>=1.21.0",
+    "gunicorn<24.0.0,>=23.0.0",
+    "python-decouple<4.0,>=3.8",
+    "whitenoise<7.0.0,>=6.8.2",
+    "django-tables2<3.0.0,>=2.7.4",
+    "django-filter<25.0,>=24.3",
+    "redis<6.0.0,>=5.2.1",
+    "sentry-sdk<3.0.0,>=2.19.2",
+    "celery<6.0.0,>=5.4.0",
+    "requests<3.0.0,>=2.32.3",
+    "django-celery-results<3.0.0,>=2.5.1",
+    "django-allauth<66.0.0,>=65.3.1",
+    "django-anymail<13.0,>=12.0",
+    "werkzeug<4.0.0,>=3.1.3",
+    "factory-boy<4.0.0,>=3.3.1",
+    "dj-database-url<3.0.0,>=2.3.0",
+    "psycopg[binary]<4.0.0,>=3.2.3",
+    "beautifulsoup4<5.0.0,>=4.12.3",
+]
 
-[tool.poetry.dependencies]
-python = "^3.12"
-django = "^5.1.4"
-django-extensions = "^3.2.3"
-django-crispy-forms = "^2.3"
-crispy-bootstrap5 = "^2024.10"
-django-htmx = "^1.21.0"
-gunicorn = "^23.0.0"
-python-decouple = "^3.8"
-whitenoise = "^6.8.2"
-django-tables2 = "^2.7.4"
-django-filter = "^24.3"
-redis = "^5.2.1"
-sentry-sdk = "^2.19.2"
-celery = "^5.4.0"
-requests = "^2.32.3"
-django-celery-results = "^2.5.1"
-django-allauth = "^65.3.1"
-django-anymail = "^12.0"
-werkzeug = "^3.1.3"
-factory-boy = "^3.3.1"
-dj-database-url = "^2.3.0"
-psycopg = {extras = ["binary"], version = "^3.2.3"}
-beautifulsoup4 = "^4.12.3"
+[dependency-groups]
+dev = [
+    "black>=24.10.0,<25.0.0",
+    "ipdb<1.0.0,>=0.13.13",
+    "pytest<9.0.0,>=8.3.4",
+    "pytest-django<5.0.0,>=4.9.0",
+    "time-machine<3.0.0,>=2.16.0",
+    "djlint<2.0.0,>=1.36.4",
+    "watchfiles<2.0.0,>=1.0.3",
+    "basedpyright>=1.24.0",
+]
 
-
-[tool.poetry.group.dev.dependencies]
-black = "^24.10.0"
-ipdb = "^0.13.13"
-pytest = "^8.3.4"
-pytest-django = "^4.9.0"
-time-machine = "^2.16.0"
-djlint = "^1.36.4"
-watchfiles = "^1.0.3"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.uv]
+default-groups = []
