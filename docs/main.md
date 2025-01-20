@@ -7,7 +7,7 @@
 
 - [x] Scanning implementation
 - [x] Finish scan detail page
-- [ ] Email working
+- [ ] ~~Email working~~
   - [x] Email disabled until post-launch
 - [ ] Production ready
 
@@ -15,3 +15,5 @@
 
 - [ ] Improve scan detail page UI
 - [ ] Add email subscription management
+- [ ] Address [SSRF](https://owasp.org/www-community/attacks/Server_Side_Request_Forgery)
+  - Limit inputs to external URLs

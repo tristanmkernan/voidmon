@@ -1,16 +1,30 @@
 version: "3.9"
-name: outreach-dev
+name: voidmon-dev
 
 services:
+  postgres:
+    image: postgres:16-alpine
+    restart: no
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=voidmon
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
   redis:
     image: redis:7.4-alpine
-    restart: unless-stopped
+    restart: no
     ports:
       - "6379:6379"
   mailpit:
     image: axllent/mailpit
+    restart: no
     logging:
       driver: 'none'  # disable saving logs
     ports:
       - 1025:1025 # smtp server
       - 8025:8025 # web ui
+volumes:
+  postgres_data:
