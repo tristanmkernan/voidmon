@@ -22,5 +22,6 @@
 - [ ] Add email subscription management
 - [ ] Address [SSRF](https://owasp.org/www-community/attacks/Server_Side_Request_Forgery)
   - Limit inputs to external URLs
+- [x] Add timeout to requests
 - [ ] Browser based checks
   - [ ] 1. DNS resolution failure for external resource
