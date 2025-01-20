@@ -6,6 +6,8 @@ import requests
 from .entities import ScanIssueEntity
 from .enums import ScanIssueType
 
+TIMEOUT = 10
+
 
 # TODO finish implementing this
 def match_netloc(site_netloc: str, resource_netloc: str) -> bool:
@@ -39,7 +41,7 @@ def is_external_resource(site_url: str, resource_url: str) -> bool:
 
 
 def scan_url(url: str) -> list[ScanIssueEntity]:
-    response = requests.get(url, headers={"Accept": "text/html"})
+    response = requests.get(url, headers={"Accept": "text/html"}, timeout=TIMEOUT)
 
     if "text/html" not in response.headers.get("Content-Type", ""):
         return [ScanIssueEntity(type=ScanIssueType.NON_HTML_RESPONSE)]
