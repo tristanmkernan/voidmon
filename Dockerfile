@@ -1,10 +1,8 @@
-FROM python:3.12-slim
+FROM ghcr.io/astral-sh/uv:python3.12-alpine
 
-ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /code
-
+# NOTE: won't work on alpine
 # RUN apt-get update
 # RUN apt-get install -y \
 #     libmagic-dev \
@@ -14,14 +12,14 @@ WORKDIR /code
 #     gfortran \
 #     libopenblas-dev
 
-COPY requirements.txt /code/
+ADD . /app
 
-RUN pip install -r requirements.txt
-
-COPY . /code/
+WORKDIR /app
 
 COPY .env.prod .env
 
-RUN ["chmod", "+x", "/code/docker-entrypoint.sh"]
+RUN uv sync --frozen
 
-ENTRYPOINT [ "/code/docker-entrypoint.sh" ]
+RUN ["chmod", "+x", "/app/docker-entrypoint.sh"]
+
+ENTRYPOINT [ "/app/docker-entrypoint.sh" ]
