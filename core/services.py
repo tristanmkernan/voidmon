@@ -40,7 +40,7 @@ def is_external_resource(site_url: str, resource_url: str) -> bool:
     return False
 
 
-def scan_url(url: str) -> list[ScanIssueEntity]:
+def scan_url_for_static_issues(url: str) -> list[ScanIssueEntity]:
     response = requests.get(url, headers={"Accept": "text/html"}, timeout=TIMEOUT)
 
     if "text/html" not in response.headers.get("Content-Type", ""):
@@ -99,3 +99,14 @@ def scan_url(url: str) -> list[ScanIssueEntity]:
             )
 
     return issues
+
+
+def scan_url_for_dynamic_issues(url: str) -> list[ScanIssueEntity]:
+    return []
+
+
+def scan_url(url: str) -> list[ScanIssueEntity]:
+    return [
+        *scan_url_for_static_issues(url),
+        *scan_url_for_dynamic_issues(url),
+    ]
