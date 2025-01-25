@@ -93,7 +93,7 @@
           </div>
 
           <!-- Subscribe for email alerts -->
-          <div class="card d-none">  <!-- TODO: enable -->
+          <div class="card">
             <div class="card-body">
               <a class="h5 d-flex flex-row align-items-center text-decoration-none" data-bs-toggle="collapse" href="#collapseSubscriptionForm">
                 <i class="bi bi-envelope me-2"></i>
@@ -105,7 +105,7 @@
                   {% crispy subscription_form %}
 
                   <small class="text-muted">
-                    Scans are run daily at 9am Eastern. You'll receive an email if any issues are found.
+                    Scans are run daily at 9am Eastern. You'll only receive an email if a vulnerability is found.
                   </small>
                 </div>
               </div>
