@@ -17,8 +17,8 @@
 - [x] Improve scan detail page UI
   - [x] Improve the issues table
   - [x] Responsive design
-- [ ] Email support
-  - [ ] Daily email task
+- [x] Email support
+  - [x] Daily email task
 - [ ] Add email subscription management
 - [ ] Address [SSRF](https://owasp.org/www-community/attacks/Server_Side_Request_Forgery)
   - Limit inputs to external URLs
