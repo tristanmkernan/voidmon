@@ -11,6 +11,8 @@ elif [ "$1" = "celery-worker" ]; then
     exec uv run celery -A voidmon worker --concurrency 2 --loglevel=info
 elif [ "$1" = "celery-beat" ]; then
     exec uv run celery -A voidmon beat --loglevel=info
+elif [ "$1" = "djshell" ]; then
+    exec uv run python manage.py shell_plus
 else
     echo "Unknown command: $1"
     exit 1
