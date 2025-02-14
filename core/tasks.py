@@ -1,3 +1,5 @@
+import traceback
+
 from celery import shared_task, chain
 from django.utils import timezone
 
@@ -24,6 +26,7 @@ def run_scan(scan_id: int):
         scan_results = scan_url(scan.url)
     except Exception as e:  # TODO: more fine grained exception handling
         scan.status = Scan.ScanStatus.ERROR
+        scan.error = traceback.format_exc()
     else:
         ## persistence
         for issue_entity in scan_results.issues:

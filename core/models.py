@@ -24,6 +24,7 @@ class Scan(models.Model):
     status = models.CharField(
         max_length=255, choices=ScanStatus.choices, default=ScanStatus.PENDING
     )
+    error = models.TextField(blank=True, null=True)
 
     @property
     def last_updated_at(self):
