@@ -10,7 +10,7 @@ from django.urls import reverse
 
 import django_tables2 as tables
 
-from .models import Scan, NotificationSubscription, ScanIssue
+from .models import DynamicScanRequest, Scan, NotificationSubscription, ScanIssue
 from .forms import ScanRequestForm, SubscriptionCreateForm
 from .tasks import run_scan, queue_subscription_confirmation_email
 
@@ -48,6 +48,24 @@ class ScanIssueTable(tables.Table):
     )
 
 
+class DynamicScanRequestsTable(tables.Table):
+    class Meta:
+        model = DynamicScanRequest
+        fields = (
+            "friendly_url_path",
+            "method",
+            "status",
+            "error",
+            "resource_type",
+            "size",
+        )
+
+        orderable = False
+        paginate = False
+
+    size = tables.TemplateColumn("{{ value|filesizeformat }}")
+
+
 class ScanDetailView(DetailView):
     model = Scan
     template_name = "core/scan_detail.html"
@@ -55,7 +73,12 @@ class ScanDetailView(DetailView):
     slug_url_kwarg = "uuid"
 
     def get_queryset(self):
-        return super().get_queryset().prefetch_related("scanissue_set")
+        return (
+            super()
+            .get_queryset()
+            .select_related("dynamicscanresults")
+            .prefetch_related("scanissue_set", "dynamicscanresults__request_set")
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -79,6 +102,15 @@ class ScanDetailView(DetailView):
         )
 
         context["issues_table"] = ScanIssueTable(sorted_scan_issues)
+
+        ## dynamic scan results may not be available, e.g. during scanning
+        context["dynamic_scan_requests_table"] = DynamicScanRequestsTable(
+            (
+                self.object.dynamicscanresults.request_set.all()
+                if hasattr(self.object, "dynamicscanresults")
+                else []
+            ),
+        )
         return context
 
 

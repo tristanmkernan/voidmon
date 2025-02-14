@@ -1,3 +1,6 @@
+import os
+
+from urllib.parse import urlparse
 from uuid import uuid4
 
 from django.db import models
@@ -73,7 +76,7 @@ class Scan(models.Model):
         )
 
     def __str__(self):
-        return f"{self.url} - {self.status}"
+        return f"Scan of {self.url} - {self.get_status_display()}"
 
 
 class ScanIssue(models.Model):
@@ -102,11 +105,47 @@ class ScanIssue(models.Model):
         }[self.severity]
 
 
+class DynamicScanResults(models.Model):
+    uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    scan = models.OneToOneField(Scan, on_delete=models.CASCADE)
+
+    # TODO nullable stats, or something else, because page may not load!
+    dom_content_loaded_after = models.IntegerField()  # ms
+    load_after = models.IntegerField()  # ms
+    network_idle_after = models.IntegerField()  # ms
+
+    num_requests = models.IntegerField()
+    size = models.IntegerField()  # bytes
+
+
+class DynamicScanRequest(models.Model):
+    uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    dynamic_scan_results = models.ForeignKey(
+        DynamicScanResults, on_delete=models.CASCADE, related_name="request_set"
+    )
+
+    url = models.URLField(max_length=1024)
+    method = models.CharField()  # GET, POST, etc.
+    resource_type = models.CharField()  # document, script, stylesheet, image, fetch
+
+    status = models.IntegerField(null=True)  # http status
+    error = models.CharField(null=True)
+    size = models.IntegerField(null=True)  # bytes
+
+    @property
+    def friendly_url_path(self):
+        return os.path.basename(urlparse(self.url).path)
+
+
 class NotificationSubscription(models.Model):
     uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    url = models.URLField()
+    url = models.URLField(max_length=1024)
     email = models.EmailField()
 
     def __str__(self):

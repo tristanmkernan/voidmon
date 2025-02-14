@@ -1169,6 +1169,7 @@ dev = [
     { name = "pytest" },
     { name = "pytest-django" },
     { name = "time-machine" },
+    { name = "wat" },
     { name = "watchfiles" },
 ]
 
@@ -1208,7 +1209,17 @@ dev = [
     { name = "pytest", specifier = ">=8.3.4,<9.0.0" },
     { name = "pytest-django", specifier = ">=4.9.0,<5.0.0" },
     { name = "time-machine", specifier = ">=2.16.0,<3.0.0" },
+    { name = "wat", specifier = ">=0.5.0" },
     { name = "watchfiles", specifier = ">=1.0.3,<2.0.0" },
+]
+
+[[package]]
+name = "wat"
+version = "0.5.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/69/74/edd7c8e8b2a6e73f83a2105d5ed8c09f644a2edb70a0d030ead6542aebb7/wat-0.5.0.tar.gz", hash = "sha256:45d4af2cf6a67841b4ff4d951808a6087c6b0d79e1b75b172d66223861daa934", size = 23702 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/13/69/4520e15cecdcfb9d064c7672a5e0685c52da24d8881f48f68bf6d3b20e4a/wat-0.5.0-py3-none-any.whl", hash = "sha256:3ae94db1ac551aa6a4d5e306272d07153a770f044b514f7bde2b553dd7068f10", size = 15359 },
 ]
 
 [[package]]

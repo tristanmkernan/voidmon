@@ -3,6 +3,12 @@
 - https://dribbble.com/shots/20206060-Workflow-Builder-Data-Visualisation
 - https://dribbble.com/shots/24093921-Scan-Details
 
+## Links
+
+- [https://marcusfelling.com/blog/2023/measuring-website-performance-with-playwright-test-and-navigation-timing-api/](Improve performance metrics in dynamic scan)
+- [https://www.checklyhq.com/learn/playwright/performance/](Even more in depth article on performance testing in Playwright)
+- [https://playwright.dev/python/docs/api/class-request](Playwright: Request class)
+
 ## Launch
 
 - [x] Scanning implementation
@@ -29,4 +35,3 @@
 - [ ] Static checks 
   - [ ] Verify resource integrity
 - [ ] Create website that has vulnerabilities for demo and testing purposes
-

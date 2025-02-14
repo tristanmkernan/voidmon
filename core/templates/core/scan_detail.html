@@ -111,6 +111,27 @@
               </div>
             </div>
           </div>
+
+          <!-- Scan debug log -->
+          <div class="card">
+            <div class="card-body">
+              <a class="h5 d-flex flex-row align-items-center text-decoration-none" data-bs-toggle="collapse" href="#collapseDebugLog">
+                <i class="bi bi-bug me-2"></i>
+                Dynamic scan results
+                <i class="bi bi-chevron-down ms-auto"></i>
+              </a>
+              <div class="collapse" id="collapseDebugLog">
+                <div class="d-flex flex-column gap-2">
+                  <p>
+                    During the dynamic scan, the following requests were collected:
+                  </p>
+
+                  {% render_table dynamic_scan_requests_table %}
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <div class="col-lg-3 d-flex flex-column gap-4">
@@ -153,6 +174,54 @@
             </ul>
           </div>
 
+          <!-- Stats sidebar-->
+          <!-- TODO use a for loop to reduce repetition -->
+          <div class="card">
+            <div class="card-header">Page stats</div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex flex-row justify-content-between align-items-center">
+                <span>DOMContentLoaded</span>
+                {% if scan.is_complete %}
+                  <span>{{ scan.dynamicscanresults.dom_content_loaded_after }}ms</span>
+                {% else %}
+                  <i class="bi bi-three-dots"></i>
+                {% endif %}
+              </li>
+              <li class="list-group-item d-flex flex-row justify-content-between align-items-center">
+                <span>Load</span>
+                {% if scan.is_complete %}
+                  <span>{{ scan.dynamicscanresults.load_after }}ms</span>
+                {% else %}
+                  <i class="bi bi-three-dots"></i>
+                {% endif %}
+              </li>
+              <li class="list-group-item d-flex flex-row justify-content-between align-items-center">
+                <span>Network idle</span>
+                {% if scan.is_complete %}
+                  <span>{{ scan.dynamicscanresults.network_idle_after }}ms</span>
+                {% else %}
+                  <i class="bi bi-three-dots"></i>
+                {% endif %}
+              </li>
+              <li class="list-group-item d-flex flex-row justify-content-between align-items-center">
+                <span>Requests</span>
+                {% if scan.is_complete %}
+                  <span>{{ scan.dynamicscanresults.num_requests }}</span>
+                {% else %}
+                  <i class="bi bi-three-dots"></i>
+                {% endif %}
+              </li>
+              <li class="list-group-item d-flex flex-row justify-content-between align-items-center">
+                <span>Total size</span>
+                {% if scan.is_complete %}
+                  <span>{{ scan.dynamicscanresults.size|filesizeformat }}</span>
+                {% else %}
+                  <i class="bi bi-three-dots"></i>
+                {% endif %}
+              </li>
+            </ul>
+          </div>
+
           <!-- Links-->
           <div class="card">
             <div class="card-header">Links</div>
@@ -167,6 +236,7 @@
               </li>
             </ul>
           </div>
+
         </div>
       </div>
     </div>

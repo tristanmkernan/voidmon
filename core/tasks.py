@@ -2,7 +2,13 @@ from celery import shared_task, chain
 from django.utils import timezone
 
 from .mail import send_subscription_confirmation_email, send_scan_results_email
-from .models import Scan, ScanIssue, NotificationSubscription
+from .models import (
+    DynamicScanResults,
+    DynamicScanRequest,
+    Scan,
+    ScanIssue,
+    NotificationSubscription,
+)
 from .services import scan_url
 
 
@@ -15,12 +21,22 @@ def run_scan(scan_id: int):
     scan.save()
 
     try:
-        issue_entities = scan_url(scan.url)
+        scan_results = scan_url(scan.url)
     except Exception as e:  # TODO: more fine grained exception handling
         scan.status = Scan.ScanStatus.ERROR
     else:
-        for issue_entity in issue_entities:
+        ## persistence
+        for issue_entity in scan_results.issues:
             ScanIssue.objects.create(scan=scan, **issue_entity.model_dump)
+
+        dsc = DynamicScanResults.objects.create(
+            scan=scan, **scan_results.dynamic_scan_results.model_dump
+        )
+
+        for dsre in scan_results.dynamic_scan_results.requests:
+            DynamicScanRequest.objects.create(
+                dynamic_scan_results=dsc, **dsre.model_dump
+            )
 
         scan.status = Scan.ScanStatus.SUCCESS
 
