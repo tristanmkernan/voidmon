@@ -1,10 +1,11 @@
 import math
+import random
 import time
 
 from functools import partial
 from urllib.parse import urlparse
 
-from playwright.sync_api import sync_playwright, Page, Request
+from playwright.sync_api import sync_playwright, Request, Route
 
 import bs4
 import requests
@@ -119,6 +120,8 @@ def scan_url_for_dynamic_issues(
     requests: list[DynamicScanRequestEntity] = []
     event_timings = {}
 
+    ## access the url in a web browser, and log all requests
+
     def handle_timing_event(event_name: str, *args):
         # TODO use the in-depth browser performance metrics instead
         event_timings[event_name] = math.floor((time.monotonic() - started_at) * 1_000)
@@ -130,7 +133,7 @@ def scan_url_for_dynamic_issues(
                 method=request.method,
                 status=getattr(request.response(), "status", None),
                 resource_type=request.resource_type,
-                size=request.sizes().get("responseBodySize", None),
+                size=None,
                 error=request.failure,
             )
         )
@@ -147,6 +150,29 @@ def scan_url_for_dynamic_issues(
             )
         )
 
+    def reroute_to_failure(route: Route):
+        # see: https://playwright.dev/python/docs/api/class-route#route-abort-option-error-code
+        error_codes = [
+            "aborted",
+            "accessdenied",
+            "addressunreachable",
+            "blockedbyclient",
+            "blockedbyresponse",
+            "connectionaborted",
+            "connectionclosed",
+            "connectionfailed",
+            "connectionrefused",
+            "connectionreset",
+            "internetdisconnected",
+            "namenotresolved",
+            "timedout",
+            "failed",
+        ]
+
+        error_code = random.choice(error_codes)
+
+        route.abort(error_code)
+
     with sync_playwright() as p:
         # opt into new headless chromium by explicitly setting channel
         # see https://playwright.dev/python/docs/browsers#chromium-new-headless-mode
@@ -160,6 +186,9 @@ def scan_url_for_dynamic_issues(
 
         page.on("domcontentloaded", partial(handle_timing_event, "domcontentloaded"))
         page.on("load", partial(handle_timing_event, "load"))
+
+        ## TESTING: fail requests
+        # page.route("**/*.{js,css,png,jpg,jpeg}", reroute_to_failure)
 
         try:
             page.goto(url, wait_until="networkidle")
@@ -178,6 +207,48 @@ def scan_url_for_dynamic_issues(
         size=sum((request.size or 0 for request in requests), 0),
         requests=requests,
     )
+
+    ## analyze the requests for errors of interest
+
+    for request in requests:
+
+        ## dns failure: dangling domain possible
+        if request.error == "net::ERR_NAME_NOT_RESOLVED":
+
+            if request.resource_type == "script":
+                issues.append(
+                    ScanIssueEntity(
+                        type=ScanIssueType.EXTERNAL_SCRIPT_DNS_FAILURE,
+                        message=f"External script DNS failure: {request.url}",
+                    )
+                )
+
+            elif request.resource_type == "stylesheet":
+                issues.append(
+                    ScanIssueEntity(
+                        type=ScanIssueType.EXTERNAL_STYLESHEET_DNS_FAILURE,
+                        message=f"External stylesheet DNS failure: {request.url}",
+                    )
+                )
+
+        ## address unreachable: dangling DNS records possible
+        elif request.error == "net::ERR_ADDRESS_UNREACHABLE":
+
+            if request.resource_type == "script":
+                issues.append(
+                    ScanIssueEntity(
+                        type=ScanIssueType.EXTERNAL_SCRIPT_ADDRESS_UNREACHABLE,
+                        message=f"External script address unreachable: {request.url}",
+                    )
+                )
+
+            elif request.resource_type == "stylesheet":
+                issues.append(
+                    ScanIssueEntity(
+                        type=ScanIssueType.EXTERNAL_STYLESHEET_ADDRESS_UNREACHABLE,
+                        message=f"External stylesheet address unreachable: {request.url}",
+                    )
+                )
 
     return issues, scan_results
 

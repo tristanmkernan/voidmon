@@ -21,3 +21,21 @@ class ScanIssueType(models.TextChoices):
         "Remote Resource Loaded Over HTTP",
     )
     NON_HTML_RESPONSE = "non_html_response", "Non HTML Response"
+
+    EXTERNAL_SCRIPT_DNS_FAILURE = (
+        "external_script_dns_failure",
+        "External Script DNS Failure",
+    )
+    EXTERNAL_STYLESHEET_DNS_FAILURE = (
+        "external_stylesheet_dns_failure",
+        "External Stylesheet DNS Failure",
+    )
+
+    EXTERNAL_SCRIPT_ADDRESS_UNREACHABLE = (
+        "external_script_address_unreachable",
+        "External Script Address Unreachable",
+    )
+    EXTERNAL_STYLESHEET_ADDRESS_UNREACHABLE = (
+        "external_stylesheet_address_unreachable",
+        "External Stylesheet Address Unreachable",
+    )
