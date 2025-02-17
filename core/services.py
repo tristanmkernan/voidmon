@@ -148,7 +148,9 @@ def scan_url_for_dynamic_issues(
         )
 
     with sync_playwright() as p:
-        browser = p.chromium.launch()
+        # opt into new headless chromium by explicitly setting channel
+        # see https://playwright.dev/python/docs/browsers#chromium-new-headless-mode
+        browser = p.chromium.launch(channel="chromium")
         page = browser.new_page()
 
         started_at = time.monotonic()
