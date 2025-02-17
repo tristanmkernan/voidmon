@@ -20,7 +20,7 @@ class Scan(models.Model):
     started_at = models.DateTimeField(null=True)
     finished_at = models.DateTimeField(null=True)
 
-    url = models.URLField(max_length=1024)
+    url = models.URLField(max_length=8192)
     status = models.CharField(
         max_length=255, choices=ScanStatus.choices, default=ScanStatus.PENDING
     )
@@ -129,7 +129,7 @@ class DynamicScanRequest(models.Model):
         DynamicScanResults, on_delete=models.CASCADE, related_name="request_set"
     )
 
-    url = models.URLField(max_length=1024)
+    url = models.URLField(max_length=8192)
     method = models.CharField()  # GET, POST, etc.
     resource_type = models.CharField()  # document, script, stylesheet, image, fetch
 
@@ -146,7 +146,7 @@ class NotificationSubscription(models.Model):
     uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    url = models.URLField(max_length=1024)
+    url = models.URLField(max_length=8192)
     email = models.EmailField()
 
     def __str__(self):

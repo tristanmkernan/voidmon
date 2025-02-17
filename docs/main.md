@@ -48,3 +48,9 @@
 - [ ] Improve display of dynamic scan requests table
 - [ ] Is domain available for purchase? Or at least unregistered?
   - [ ] Is IP available to be allocated/assigned?
+
+
+#### Bugs
+
+- [ ] Negative request size: -1.0 KB
+- [x] Rinse.com doesn't load
